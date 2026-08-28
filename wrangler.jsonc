@@ -5,7 +5,7 @@
   "compatibility_date": "2026-08-23",
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "directory": "./dist", "binding": "ASSETS", "not_found_handling": "single-page-application", "run_worker_first": ["/api/*", "/media/*", "/realtime"] },
-  "d1_databases": [{ "binding": "DB", "database_name": "ceniza-portfolio", "database_id": "00000000-0000-0000-0000-000000000000", "migrations_dir": "./migrations" }],
+  "d1_databases": [{ "binding": "DB", "database_name": "ceniza-portfolio", "database_id": "f70502e3-8ca7-4be9-b721-fc9b7a0ee9cb", "migrations_dir": "./migrations" }],
   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "ceniza-portfolio-media" }],
   "durable_objects": { "bindings": [{ "name": "PUBLICATIONS", "class_name": "PublicationHub" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["PublicationHub"] }],
