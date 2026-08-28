@@ -1,0 +1,8 @@
+export interface ImageItem { id: string; image_url: string; alt_text: string; title?: string; category?: string }
+export interface Project { id: string; slug: string; title: string; subtitle: string; description: string; design_goals: string; year: string; role: string; category: string; tags: string[]; cover_url: string; external_url: string; roblox_url: string; featured: number; images: ImageItem[] }
+export interface Homepage { designerName: string; professionalTitle: string; heroHeadline: string; heroDescription: string; availability: string; location: string; primaryCta: string; secondaryCta: string; heroMediaUrls: string[]; sectionVisibility: Record<string, boolean> }
+export interface About { biography: string; specialties: string[]; tools: string[]; styles: { name: string; description: string; image: string }[]; capabilityCards?: { title: string; description: string; image: string; accent: string }[] }
+export interface PortfolioDetails { introTitle: string; introParagraphs: string[]; whatICanDo: string[]; whyHire: string[]; payment: { method: string; deposit: string; balance: string; watermark: string; delivery: string; priority: string } }
+export interface PublicContent { homepage: Homepage; about: About; portfolio_details?: PortfolioDetails; seo: { title: string; description: string; canonicalUrl: string; footerText: string }; pricing_intro: { title: string; description: string }; projects: Project[]; gallery: ImageItem[]; services: AdminRow[]; process: AdminRow[]; pricing: AdminRow[]; socials: AdminRow[]; stats: AdminRow[]; version: string }
+export interface AdminRow { id: string; [key: string]: string | number | null }
+export interface User { id: string; email: string; displayName: string; role: "OWNER" | "ADMIN" | "EDITOR" }
