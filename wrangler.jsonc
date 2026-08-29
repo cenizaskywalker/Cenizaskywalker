@@ -20,8 +20,8 @@
 		{
 			"binding": "DB",
 			"database_name": "ceniza-portfolio",
-			"database_id": "f70502e3-8ca7-4be9-b721-fc9b7a0ee9cb",
-			"migrations_dir": "../../migrations",
+			"database_id": "e8c54ab0-0ce6-441c-8927-9b78bf6353fc",
+			"migrations_dir": "./migrations",
 		},
 	],
 	"r2_buckets": [
