@@ -3,10 +3,8 @@ import { z } from "zod";
 import {
   createSession,
   destroySession,
-  hashPassword,
   recordLogin,
   checkLoginLimit,
-  verifyPassword,
 } from "./security";
 import type { AppEnv, AppVariables, Role } from "./types";
 
@@ -164,10 +162,12 @@ admin.post("/setup", async (c) => {
   ).first<{ count: number }>();
   if ((count?.count ?? 0) !== 0)
     return c.json({ error: "Initial setup is closed" }, 409);
-  const password = await hashPassword(parsed.data.password);
   const userId = id();
+  const password = await c.env.PASSWORD_HASHER.getByName(userId).hash(
+    parsed.data.password,
+  );
   try {
-    await c.env.DB.prepare(
+    const result = await c.env.DB.prepare(
       "INSERT INTO users(id,email,display_name,role,password_hash,password_salt,password_iterations) SELECT ?,?,?,'OWNER',?,?,? WHERE NOT EXISTS(SELECT 1 FROM users)",
     )
       .bind(
@@ -179,6 +179,8 @@ admin.post("/setup", async (c) => {
         password.iterations,
       )
       .run();
+    if (result.meta.changes !== 1)
+      return c.json({ error: "Initial setup is already complete" }, 409);
   } catch {
     return c.json({ error: "Initial setup is already complete" }, 409);
   }
@@ -216,7 +218,7 @@ admin.post("/login", async (c) => {
   const valid = Boolean(
     user &&
     !user.disabled &&
-    (await verifyPassword(
+    (await c.env.PASSWORD_HASHER.getByName(user.id).verify(
       body.data.password,
       user.password_hash,
       user.password_salt,
@@ -561,8 +563,10 @@ admin.post("/users", async (c) => {
     .safeParse(await c.req.json());
   if (!body.success || !body.data.displayName)
     return c.json({ error: "Invalid user" }, 400);
-  const password = await hashPassword(body.data.password);
   const userId = id();
+  const password = await c.env.PASSWORD_HASHER.getByName(userId).hash(
+    body.data.password,
+  );
   try {
     await c.env.DB.prepare(
       "INSERT INTO users(id,email,display_name,role,password_hash,password_salt,password_iterations) VALUES(?,?,?,?,?,?,?)",
@@ -618,7 +622,9 @@ admin.put("/users/:id", async (c) => {
     values.push(body.data.disabled ? 1 : 0);
   }
   if (body.data.password) {
-    const p = await hashPassword(body.data.password);
+    const p = await c.env.PASSWORD_HASHER.getByName(c.req.param("id")).hash(
+      body.data.password,
+    );
     updates.push("password_hash=?", "password_salt=?", "password_iterations=?");
     values.push(p.hash, p.salt, p.iterations);
   }

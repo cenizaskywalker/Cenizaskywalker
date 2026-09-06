@@ -2,11 +2,12 @@ import { Hono } from "hono";
 import { z } from "zod";
 import admin from "./admin";
 import { getPublicContent } from "./content";
+import { PasswordHasher } from "./password-hasher";
 import { PublicationHub } from "./publication-hub";
 import { readSession, validCsrf } from "./security";
 import type { AppEnv, AppVariables } from "./types";
 
-export { PublicationHub };
+export { PasswordHasher, PublicationHub };
 const app = new Hono<{ Bindings: AppEnv; Variables: AppVariables }>();
 const COMMISSION_REQUEST_LIMIT = 10;
 const COMMISSION_REQUEST_WINDOW_MS = 60 * 60_000;

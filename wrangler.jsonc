@@ -13,8 +13,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "ceniza-portfolio",
-      "database_id": "e8c54ab0-0ce6-441c-8927-9b78bf6353fc",
+      "database_name": "cenizasdatabase",
+      "database_id": "f70502e3-8ca7-4be9-b721-fc9b7a0ee9cb",
       "migrations_dir": "./migrations",
     },
   ],
@@ -30,6 +30,10 @@
         "name": "PUBLICATIONS",
         "class_name": "PublicationHub",
       },
+      {
+        "name": "PASSWORD_HASHER",
+        "class_name": "PasswordHasher",
+      },
     ],
   },
   "migrations": [
@@ -37,23 +41,17 @@
       "tag": "v1",
       "new_sqlite_classes": ["PublicationHub"],
     },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["PasswordHasher"],
+    },
   ],
   "vars": {
-    "ENVIRONMENT": "development",
     "SESSION_TTL_SECONDS": "604800",
     "MAX_UPLOAD_BYTES": "10485760",
   },
   "observability": {
     "enabled": true,
     "head_sampling_rate": 1,
-  },
-  "env": {
-    "production": {
-      "vars": {
-        "ENVIRONMENT": "production",
-        "SESSION_TTL_SECONDS": "604800",
-        "MAX_UPLOAD_BYTES": "10485760",
-      },
-    },
   },
 }

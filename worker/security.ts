@@ -2,10 +2,8 @@ import type { AppEnv, AuthUser, Session } from "./types";
 
 const encoder = new TextEncoder();
 const COOKIE = "ceniza_session";
-const ITERATIONS = 210_000;
 
 const bytesToBase64 = (bytes: Uint8Array): string => btoa(String.fromCharCode(...bytes));
-const base64ToBytes = (value: string): Uint8Array => Uint8Array.from(atob(value), (char) => char.charCodeAt(0));
 const randomToken = (length = 32): string => bytesToBase64(crypto.getRandomValues(new Uint8Array(length))).replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
 function constantTimeEqual(left: Uint8Array, right: Uint8Array): boolean {
   if (left.length !== right.length) return false;
@@ -16,19 +14,6 @@ function constantTimeEqual(left: Uint8Array, right: Uint8Array): boolean {
 
 export async function sha256(value: string): Promise<string> {
   return bytesToBase64(new Uint8Array(await crypto.subtle.digest("SHA-256", encoder.encode(value))));
-}
-
-export async function hashPassword(password: string, salt = randomToken(18), iterations = ITERATIONS): Promise<{ hash: string; salt: string; iterations: number }> {
-  const material = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
-  const result = await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: encoder.encode(salt), iterations }, material, 256);
-  return { hash: bytesToBase64(new Uint8Array(result)), salt, iterations };
-}
-
-export async function verifyPassword(password: string, expected: string, salt: string, iterations: number): Promise<boolean> {
-  const actual = await hashPassword(password, salt, iterations);
-  const left = base64ToBytes(actual.hash);
-  const right = base64ToBytes(expected);
-  return constantTimeEqual(left, right);
 }
 
 function cookieValue(request: Request): string | null {
@@ -45,7 +30,7 @@ export async function createSession(request: Request, env: AppEnv, userId: strin
   const ip = request.headers.get("CF-Connecting-IP")?.split(".").slice(0, 3).join(".") ?? null;
   await env.DB.prepare("INSERT INTO sessions(id_hash,user_id,csrf_token,expires_at,user_agent,ip_prefix) VALUES(?,?,?,?,?,?)")
     .bind(idHash, userId, csrfToken, expires.toISOString(), request.headers.get("User-Agent")?.slice(0, 255) ?? null, ip).run();
-  const secure = env.ENVIRONMENT === "production" ? "; Secure" : "";
+  const secure = new URL(request.url).protocol === "https:" ? "; Secure" : "";
   return { cookie: `${COOKIE}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${ttl}${secure}`, csrfToken };
 }
 

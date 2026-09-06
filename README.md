@@ -8,7 +8,7 @@ Production-oriented portfolio and lightweight CMS. The public experience is visu
 - **Cloudflare Worker + Hono** — API routing, validation, security headers and asset delivery.
 - **Cloudflare D1** — normalized content, users, sessions and audit history.
 - **Cloudflare R2** — reusable media library. Original PNGs remain bundled; new uploads use R2.
-- **Durable Object** — hibernating WebSockets for publication notifications. D1 remains the source of truth.
+- **Durable Objects** — hibernating WebSockets for publication notifications and isolated PBKDF2 password hashing with a free-tier-compatible CPU budget. D1 remains the source of truth for users, sessions and content.
 
 Public content is read from `/api/content`; it is not sourced from frontend JSON or localStorage.
 
@@ -95,14 +95,13 @@ npx wrangler r2 bucket create ceniza-portfolio-media
 npm run db:migrate:remote
 npm run build
 npx wrangler deploy --dry-run
-npm run deploy -- --env production
+npm run deploy
 ```
 
 Replace the placeholder D1 `database_id` in `wrangler.jsonc` with the ID returned at creation. The Durable Object namespace and migration deploy with the Worker. After deploy, visit `/admin` and create the first owner.
 
 Non-secret configuration in `wrangler.jsonc`:
 
-- `ENVIRONMENT` — enables Secure production cookies.
 - `SESSION_TTL_SECONDS` — session lifetime (default seven days).
 - `MAX_UPLOAD_BYTES` — server-side upload ceiling.
 
@@ -126,7 +125,7 @@ npm run build
 npx wrangler deploy --dry-run
 ```
 
-Security includes PBKDF2-SHA-256 with per-user salts, hashed opaque session IDs, HttpOnly/SameSite cookies, Secure production cookies, CSRF checks, login throttling, parameterized SQL, role checks, restricted uploads and HTTP security headers.
+Security includes PBKDF2-SHA-256 with per-user salts delegated to a per-user Durable Object, hashed opaque session IDs, HttpOnly/SameSite cookies, Secure HTTPS cookies, CSRF checks, login throttling, parameterized SQL, role checks, restricted uploads and HTTP security headers.
 
 ## Notes
 
