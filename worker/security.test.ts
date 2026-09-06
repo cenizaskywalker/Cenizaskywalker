@@ -39,7 +39,7 @@ describe("owner setup", () => {
     expect(user).toEqual({
       email: "owner@example.com",
       role: "OWNER",
-      password_iterations: 210_000,
+      password_iterations: 100_000,
     });
 
     const loginResponse = await app.request(

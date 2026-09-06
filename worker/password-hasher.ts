@@ -1,8 +1,8 @@
 import { DurableObject } from "cloudflare:workers";
 
-const PASSWORD_ITERATIONS = 210_000;
+const PASSWORD_ITERATIONS = 100_000;
 const MAX_PASSWORD_LENGTH = 128;
-const MAX_ITERATIONS = 1_000_000;
+const MAX_ITERATIONS = 100_000;
 const encoder = new TextEncoder();
 
 export interface PasswordHash {

@@ -167,9 +167,9 @@ export function Portfolio() {
               CENIZA — {homepage.professionalTitle}
             </p>
             <h1>
-              Soy
+              Game interfaces
               <br />
-              re <em>Putoooo.</em>
+              with <em>character.</em>
             </h1>
             <p className="landing-lead">{homepage.heroDescription}</p>
             <div className="landing-actions">
