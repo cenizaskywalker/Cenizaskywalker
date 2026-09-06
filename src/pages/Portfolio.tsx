@@ -128,7 +128,7 @@ export function Portfolio() {
         <div className="landing-copy">
           <div className="availability-pill"><span />{homepage.availability}</div>
           <p className="landing-role">CENIZA — {homepage.professionalTitle}</p>
-          <h1>Game interfaces<br />with <em>character.</em></h1>
+          <h1>Soys<br />with <em>Putoooo.</em></h1>
           <p className="landing-lead">{homepage.heroDescription}</p>
           <div className="landing-actions">
             <a href="#work" className="action action-dark">Explore work <b>↓</b></a>
