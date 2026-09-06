@@ -169,7 +169,7 @@ export function Portfolio() {
             <h1>
               Game interfaces
               <br />
-              with <em>character.</em>
+              WITH <em>character.</em>
             </h1>
             <p className="landing-lead">{homepage.heroDescription}</p>
             <div className="landing-actions">
